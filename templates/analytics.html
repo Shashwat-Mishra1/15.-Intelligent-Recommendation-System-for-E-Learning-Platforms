@@ -1,0 +1,138 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}Learning Analytics{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">LEARNING ANALYTICS</span>
+        <h1>Your Progress at a Glance</h1>
+        <p>
+            Use your learning activity to understand what is going well
+            and what to practice next.
+        </p>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Enrolled Courses</span>
+        <strong>{{ total_enrolled }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-label">Completed Courses</span>
+        <strong>{{ total_completed }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-label">Quiz Attempts</span>
+        <strong>{{ quiz_attempts }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-label">Average Score</span>
+        <strong>
+            {% if average_score is not none %}
+                {{ average_score }}%
+            {% else %}
+                &mdash;
+            {% endif %}
+        </strong>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-title">
+        <h2>Course Performance</h2>
+    </div>
+
+    {% if enrollments %}
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Quiz Score</th>
+                    <th>Performance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for e in enrollments %}
+                <tr>
+                    <td>
+                        <strong>{{ e.course.title }}</strong>
+                        <div class="muted small">
+                            {{ e.course.category }}
+                        </div>
+                    </td>
+
+                    <td>
+                        {% if e.quiz_score is not none %}
+                            {{ e.quiz_score }}%
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if e.quiz_score is not none %}
+                        <div class="bar-track">
+                            <div
+                                class="bar-fill"
+                                data-width="{{ e.quiz_score }}"
+                            ></div>
+                        </div>
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if e.completed %}
+                        <span class="status complete">Completed</span>
+                        {% else %}
+                        <span class="status progress">In Progress</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+        <h3>No Learning Data Yet</h3>
+        <p>
+            Enroll in courses and take quizzes to see your analytics.
+        </p>
+        <a class="btn primary" href="{{ url_for('courses') }}">
+            Explore Courses
+        </a>
+    </div>
+
+    {% endif %}
+</section>
+
+<script>
+document.querySelectorAll('.bar-fill[data-width]').forEach(function (bar) {
+    var score = parseFloat(bar.dataset.width);
+
+    if (!Number.isFinite(score)) {
+        score = 0;
+    }
+
+    score = Math.max(0, Math.min(100, score));
+    bar.style.width = score + '%';
+});
+</script>
+
+{% endblock %}
+```

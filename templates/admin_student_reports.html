@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Performance Reports</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+        header {
+            background: #172554;
+            color: white;
+            padding: 22px 5%;
+        }
+        header h1 { margin: 0 0 8px; }
+        nav { margin-top: 14px; }
+        nav a {
+            color: white;
+            margin-right: 18px;
+            text-decoration: none;
+        }
+        main { max-width: 1200px; margin: 30px auto; padding: 0 18px; }
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 14px #0000000d;
+            overflow-x: auto;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+        th { background: #eff6ff; }
+        .empty { padding: 24px; text-align: center; color: #64748b; }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 20px;
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        @media (max-width: 650px) {
+            header { padding: 18px; }
+            main { margin-top: 18px; }
+            .panel { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Student Performance Reports</h1>
+    <p>Review enrollment, course completion, and quiz performance.</p>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Student Dashboard</a>
+        <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<main>
+    <section class="panel">
+        <div class="toolbar">
+            <div>
+                <h2>Performance Overview</h2>
+                <p>Registered students: <strong>{{ total_students }}</strong></p>
+            </div>
+            <a class="button"
+               href="{{ url_for('export_student_reports') }}">
+                Download CSV
+            </a>
+        </div>
+
+        {% if student_reports %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Account</th>
+                    <th>Enrolled</th>
+                    <th>Completed</th>
+                    <th>Quiz Attempts</th>
+                    <th>Average Score</th>
+                    <th>Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in student_reports %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.email }}</td>
+                    <td>
+                        {% if s.is_admin %}
+                        <span class="badge">Admin</span>
+                        {% else %}
+                        Student
+                        {% endif %}
+                    </td>
+                    <td>{{ s.total_enrolled }}</td>
+                    <td>{{ s.completed_count }}</td>
+                    <td>{{ s.quiz_attempts }}</td>
+                    <td>
+                        {% if s.average_score is not none %}
+                            {{ s.average_score }}%
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ s.completion_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty">No registered students were found.</p>
+        {% endif %}
+    </section>
+</main>
+</body>
+</html>

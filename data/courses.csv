@@ -1,0 +1,11 @@
+title,category,level,skills,description
+Python Programming Fundamentals,Programming,Beginner,"python, programming, problem solving","Learn variables, data types, conditionals, loops, functions, and core Python concepts."
+Web Development with Flask,Web Development,Intermediate,"python, flask, html, css, web development","Build web applications with Flask, templates, routing, forms, and databases."
+HTML and CSS Essentials,Web Development,Beginner,"html, css, frontend, web design","Create accessible web pages with semantic HTML and responsive CSS."
+JavaScript for Beginners,Programming,Beginner,"javascript, frontend, programming","Learn JavaScript syntax, DOM manipulation, events, and browser fundamentals."
+Machine Learning Basics,Data Science,Intermediate,"python, machine learning, data science, statistics","Understand supervised learning, model evaluation, and basic machine-learning workflows."
+Data Analysis with Pandas,Data Science,Intermediate,"python, pandas, data analysis, csv","Clean, transform, analyze, and summarize datasets with Pandas."
+SQL and Database Design,Databases,Beginner,"sql, database, data modeling","Learn relational databases, SELECT queries, joins, constraints, and schema design."
+Introduction to Artificial Intelligence,Artificial Intelligence,Beginner,"ai, machine learning, algorithms","Explore AI concepts, search, knowledge representation, and practical applications."
+Responsive UI Design,Web Development,Intermediate,"html, css, responsive design, ui","Design usable responsive layouts for desktop and mobile screens."
+Advanced Python Projects,Programming,Advanced,"python, oop, testing, software design","Apply object-oriented programming, testing, and maintainable project structure."

@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Quiz result{% endblock %}
+{% block content %}
+<section class="result-panel panel"><span class="eyebrow">QUIZ RESULT</span><div class="score-circle"><strong>{{ score|int }}%</strong></div><h1>{% if score >= 50 %}Nice work!{% else %}Keep practicing!{% endif %}</h1><p>You answered {{ correct }} out of {{ total }} questions correctly in <strong>{{ course.title }}</strong>.</p><p>Your score has been saved and will inform your learning analytics and recommendations.</p><div class="hero-actions centered"><a class="btn primary" href="{{ url_for('dashboard') }}">Back to dashboard</a><a class="btn secondary" href="{{ url_for('take_quiz', course_id=course.id) }}">Try again</a></div></section>
+{% endblock %}

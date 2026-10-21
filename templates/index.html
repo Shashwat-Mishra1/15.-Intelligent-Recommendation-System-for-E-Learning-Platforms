@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Learn smarter{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">PERSONALIZED E-LEARNING</span>
+    <h1>Your next skill starts <span>right here.</span></h1>
+    <p>Discover courses matched to your interests, skills, and learning performance. Track progress and keep moving forward.</p>
+    <div class="hero-actions"><a class="btn primary" href="{{ url_for('register') }}">Create free account</a><a class="btn secondary" href="{{ url_for('login') }}">I already have an account</a></div>
+    <div class="hero-points"><span>✓ Smart recommendations</span><span>✓ Track quiz scores</span><span>✓ Learning analytics</span></div>
+  </div>
+  <div class="hero-art"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="learning-card"><div class="card-icon">✦</div><span class="muted">YOUR LEARNING PATH</span><h3>Small steps. Big progress.</h3><div class="progress-track"><div class="progress-fill" style="width:72%"></div></div><p class="muted">Keep building your skills</p><div class="art-tags"><span>Python</span><span>Design</span><span>AI</span></div></div><div class="floating-bubble">↗</div></div>
+</section>
+<section class="feature-grid">
+  <article class="feature"><div class="feature-icon">◎</div><h3>Recommendations that fit</h3><p>Course suggestions use your interests, skills, and quiz performance.</p></article>
+  <article class="feature"><div class="feature-icon">▥</div><h3>See your progress</h3><p>Monitor enrollments, quiz attempts, scores, and course completion.</p></article>
+  <article class="feature"><div class="feature-icon">✓</div><h3>Learn by doing</h3><p>Take quizzes, save scores, and complete courses as you progress.</p></article>
+</section>
+{% endblock %}
