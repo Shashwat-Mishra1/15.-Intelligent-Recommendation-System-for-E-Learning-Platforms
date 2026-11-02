@@ -78,7 +78,18 @@
     <nav>
         <a href="{{ url_for('dashboard') }}">Student Dashboard</a>
         <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
+        <form
+  method="post"
+  action="{{ url_for('logout') }}"
+  style="display: inline-block; margin: 0;"
+>
+  <input
+    type="hidden"
+    name="csrf_token"
+    value="{{ csrf_token() }}"
+  >
+  <button type="submit">Log out</button>
+</form>
     </nav>
 </header>
 
