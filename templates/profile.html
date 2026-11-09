@@ -1,6 +1,89 @@
 {% extends "base.html" %}
+
 {% block title %}Your profile{% endblock %}
+
 {% block content %}
-<section class="page-heading"><div><span class="eyebrow">YOUR PROFILE</span><h1>Learning preferences</h1><p>Keep your interests and skills up to date to improve recommendations.</p></div></section>
-<form <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> class="panel profile-form" method="post"><label>Full name<input name="name" value="{{ current_user.name }}" required></label><label>Email address<input value="{{ current_user.email }}" disabled></label><label>Interests <span class="muted small">(comma-separated)</span><textarea name="interests" rows="3">{{ current_user.interests or '' }}</textarea></label><label>Current skills <span class="muted small">(comma-separated)</span><textarea name="skills" rows="3">{{ current_user.skills or '' }}</textarea></label><button class="btn primary" type="submit">Save preferences</button></form>
+<section class="page-heading">
+  <div>
+    <span class="eyebrow">YOUR PROFILE</span>
+    <h1>Learning preferences</h1>
+    <p>
+      Update your interests and existing skills to help personalize
+      course recommendations.
+    </p>
+  </div>
+
+  <a class="btn secondary" href="{{ url_for('dashboard') }}">
+    Back to dashboard
+  </a>
+</section>
+
+<form class="panel profile-form" method="post" action="{{ url_for('profile') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <label for="profile-name">
+    Full name
+    <input
+      id="profile-name"
+      type="text"
+      name="name"
+      value="{{ request.form.get('name', current_user.name or '') }}"
+      maxlength="100"
+      autocomplete="name"
+      required
+    >
+  </label>
+
+  <label for="profile-email">
+    Email address
+    <input
+      id="profile-email"
+      type="email"
+      value="{{ current_user.email }}"
+      aria-describedby="profile-email-help"
+      disabled
+    >
+  </label>
+
+  <p id="profile-email-help" class="muted small">
+    Your email address cannot be changed on this page.
+  </p>
+
+  <label for="profile-interests">
+    Interests
+    <textarea
+      id="profile-interests"
+      name="interests"
+      rows="3"
+      maxlength="300"
+      placeholder="Python, data analysis, web development"
+      aria-describedby="profile-interests-help"
+    >{{ request.form.get('interests', current_user.interests or '') }}</textarea>
+  </label>
+
+  <p id="profile-interests-help" class="muted small">
+    List topics you want to explore. Use comma-separated keywords
+    or a short description. Maximum 300 characters.
+  </p>
+
+  <label for="profile-skills">
+    Current skills
+    <textarea
+      id="profile-skills"
+      name="skills"
+      rows="3"
+      maxlength="300"
+      placeholder="HTML, Java, basic Python"
+      aria-describedby="profile-skills-help"
+    >{{ request.form.get('skills', current_user.skills or '') }}</textarea>
+  </label>
+
+  <p id="profile-skills-help" class="muted small">
+    Describe skills you already have. Maximum 300 characters.
+  </p>
+
+  <button class="btn primary" type="submit">
+    Save preferences
+  </button>
+</form>
 {% endblock %}

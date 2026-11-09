@@ -32,23 +32,11 @@
           <a href="{{ url_for('admin_dashboard') }}">Admin</a>
         {% endif %}
 
-        <form
-<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-          class="nav-logout-form"
-          method="post"
-          action="{{ url_for('logout') }}"
-        >
-          <input
-            type="hidden"
-            name="csrf_token"
-            value="{{ csrf_token() }}"
-          >
-
-          <button class="nav-logout" type="submit">
-            Log out
-          </button>
-        </form>
+        <form class="nav-logout-form" method="post" action="{{ url_for('logout') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button class="nav-logout" type="submit">Log out</button>
+</form>
+        
       {% else %}
         <a href="{{ url_for('login') }}">Log in</a>
         <a class="nav-cta" href="{{ url_for('register') }}">

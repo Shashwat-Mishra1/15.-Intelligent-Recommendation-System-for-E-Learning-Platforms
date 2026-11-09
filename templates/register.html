@@ -1,5 +1,109 @@
 {% extends "base.html" %}
+
 {% block title %}Create account{% endblock %}
+
 {% block content %}
-<section class="auth-layout"><div class="auth-intro"><span class="eyebrow">START LEARNING</span><h1>Build a path that fits you.</h1><p>Tell us a little about your learning goals so recommendations can be more relevant.</p></div><form  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> class="panel auth-form" method="post"><h2>Create account</h2><label>Full name<input name="name" maxlength="100" required autocomplete="name"></label><label>Email address<input type="email" name="email" required autocomplete="email"></label><label>Password <span class="muted small">(8 characters minimum)</span><input type="password" name="password" minlength="8" required autocomplete="new-password"></label><label>Interests <span class="muted small">(comma-separated)</span><input name="interests" placeholder="Python, AI, web design"></label><label>Current skills <span class="muted small">(comma-separated)</span><input name="skills" placeholder="HTML, problem solving"></label><button class="btn primary full" type="submit">Create account</button><p class="form-foot">Already registered? <a href="{{ url_for('login') }}">Log in</a></p></form></section>
+<section class="auth-layout">
+  <div class="auth-intro">
+    <span class="eyebrow">START LEARNING</span>
+
+    <h1>Find your next learning step.</h1>
+
+    <p>
+      Create an account to discover courses, take quizzes,
+      and track your progress.
+    </p>
+  </div>
+
+  <form
+    class="panel auth-form"
+    method="post"
+    action="{{ url_for('register') }}"
+  >
+    <input
+      type="hidden"
+      name="csrf_token"
+      value="{{ csrf_token() }}"
+    >
+
+    <h2>Create account</h2>
+
+    <label for="register-name">
+      Full name
+      <input
+        id="register-name"
+        type="text"
+        name="name"
+        value="{{ request.form.get('name', '') }}"
+        maxlength="100"
+        autocomplete="name"
+        required
+      >
+    </label>
+
+    <label for="register-email">
+      Email address
+      <input
+        id="register-email"
+        type="email"
+        name="email"
+        value="{{ request.form.get('email', '') }}"
+        maxlength="150"
+        autocomplete="email"
+        required
+      >
+    </label>
+
+    <label for="register-password">
+      Password
+      <span class="muted small">At least 8 characters</span>
+
+      <input
+        id="register-password"
+        type="password"
+        name="password"
+        minlength="8"
+        autocomplete="new-password"
+        required
+      >
+    </label>
+
+    <label for="register-interests">
+      Interests
+      <span class="muted small">Optional, comma-separated</span>
+
+      <input
+        id="register-interests"
+        type="text"
+        name="interests"
+        value="{{ request.form.get('interests', '') }}"
+        maxlength="300"
+        placeholder="Python, AI, web development"
+      >
+    </label>
+
+    <label for="register-skills">
+      Current skills
+      <span class="muted small">Optional, comma-separated</span>
+
+      <input
+        id="register-skills"
+        type="text"
+        name="skills"
+        value="{{ request.form.get('skills', '') }}"
+        maxlength="300"
+        placeholder="HTML, Java, basic Python"
+      >
+    </label>
+
+    <button class="btn primary full" type="submit">
+      Create account
+    </button>
+
+    <p class="form-foot">
+      Already registered?
+      <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+  </form>
+</section>
 {% endblock %}
