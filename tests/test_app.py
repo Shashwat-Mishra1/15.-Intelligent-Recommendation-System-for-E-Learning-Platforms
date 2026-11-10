@@ -355,3 +355,53 @@ def test_logout_requires_csrf_token(client):
 
     with client.session_transaction() as session:
         assert "_user_id" in session
+def test_course_detail_requires_login(client):
+    course_id = course_id_for(client)
+
+    response = client.get(f"/courses/{course_id}")
+
+    assert response.status_code == 302
+
+
+def test_course_notes_require_enrollment(client):
+    login(client)
+
+    with client.application.app_context():
+        course = Course.query.one()
+        course.title = "Python Programming Fundamentals"
+        course_id = course.id
+        db.session.commit()
+
+    response = client.get(f"/courses/{course_id}")
+
+    assert response.status_code == 200
+    assert b"Enroll in course" in response.data
+    assert b"Variables, values, and comments" not in response.data
+
+
+def test_enrolled_student_can_read_course_notes(client):
+    login(client)
+
+    with client.application.app_context():
+        course = Course.query.one()
+        course.title = "Python Programming Fundamentals"
+        course_id = course.id
+        db.session.commit()
+
+    client.post(f"/enroll/{course_id}")
+
+    response = client.get(f"/courses/{course_id}")
+
+    assert response.status_code == 200
+    assert b"Variables, values, and comments" in response.data
+    assert b"Practice task" in response.data
+
+
+def test_unpublished_course_has_clear_message(client):
+    login(client)
+    course_id = course_id_for(client)
+
+    response = client.get(f"/courses/{course_id}")
+
+    assert response.status_code == 200
+    assert b"Learning notes have not been published" in response.data

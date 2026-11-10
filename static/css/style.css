@@ -30,3 +30,55 @@ button:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 3px;
 }
+.learning-panel {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.learning-panel h2 {
+  margin-top: 0;
+  font-family: Manrope, sans-serif;
+}
+
+.lesson-panel {
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.lesson-panel h3 {
+  margin-top: 0;
+  font: 700 21px/1.4 Manrope, sans-serif;
+}
+
+.lesson-panel h4 {
+  margin-bottom: 8px;
+}
+
+.lesson-panel li {
+  margin-bottom: 8px;
+}
+
+.lesson-code {
+  padding: 18px;
+  border-radius: 10px;
+  background: #142238;
+  color: #e8f0ff;
+  overflow-x: auto;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.lesson-code code {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.lesson-panel .text-link {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .learning-panel,
+  .lesson-panel {
+    padding: 18px;
+  }
+}

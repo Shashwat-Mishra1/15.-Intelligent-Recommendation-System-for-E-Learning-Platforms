@@ -29,6 +29,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from models.database import db, Student, Course, Enrollment
 from recommender.engine import recommend_courses
 from recommender.quiz_data import QUIZ_BANK
+from recommender.learning_content import get_learning_content
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -431,6 +432,29 @@ def create_app(test_config=None):
                 return redirect(url_for("profile"))
 
         return render_template("profile.html")
+
+    @application.route("/courses/<int:course_id>")
+    @login_required
+    def course_detail(course_id):
+        course = db.session.get(Course, course_id)
+
+        if course is None:
+            abort(404)
+
+        enrollment = Enrollment.query.filter_by(
+            student_id=current_user.id,
+            course_id=course_id,
+        ).first()
+
+        content = get_learning_content(course.title)
+
+        return render_template(
+            "course_detail.html",
+            course=course,
+            enrollment=enrollment,
+            content=content,
+        )
+
 
     @application.route("/courses")
     @login_required
