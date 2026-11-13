@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
@@ -28,7 +29,7 @@ class Course(db.Model):
     enrollments = db.relationship("Enrollment", back_populates="course")
 
 
-class Enrollment(db.Model):
+class Enrollment(db.Model):    
     __tablename__ = "enrollments"
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
@@ -38,3 +39,36 @@ class Enrollment(db.Model):
     student = db.relationship("Student", back_populates="enrollments")
     course = db.relationship("Course", back_populates="enrollments")
     __table_args__ = (UniqueConstraint("student_id", "course_id", name="unique_student_course"),)
+
+class QuizAttempt(db.Model):
+    __tablename__ = "quiz_attempts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    enrollment_id = db.Column(
+        db.Integer,
+        db.ForeignKey("enrollments.id"),
+        nullable=False,
+    )
+    score = db.Column(db.Integer, nullable=False)
+    correct_answers = db.Column(db.Integer, nullable=False)
+    total_questions = db.Column(db.Integer, nullable=False)
+    submitted_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        default= datetime.utcnow,
+    )
+
+    enrollment = db.relationship(
+        "Enrollment",
+        backref=db.backref(
+            "quiz_attempts",
+            cascade="all, delete-orphan",
+            lazy=True,
+        ),
+    )
+
+def __repr__(self):
+        return (
+            f"<QuizAttempt enrollment={self.enrollment_id} "
+            f"score={self.score}>"
+        )

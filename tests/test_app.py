@@ -1,3 +1,4 @@
+from models.database import QuizAttempt
 from pathlib import Path
 
 import re

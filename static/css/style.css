@@ -82,3 +82,20 @@ button:focus-visible {
     padding: 18px;
   }
 }
+.attempt-history {
+  margin-top: 12px;
+}
+
+.attempt-history summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.attempt-history ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.attempt-history li {
+  margin-bottom: 6px;
+}

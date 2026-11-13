@@ -1,3 +1,4 @@
+from models.database import QuizAttempt
 import csv
 import io
 import os
@@ -592,8 +593,18 @@ def create_app(test_config=None):
                 if answer == question["answer"]:
                     correct += 1
 
-            score = round(correct / len(questions) * 100, 1)
+                    score = round(correct / len(questions) * 100, 1)
+
             enrollment.quiz_score = score
+
+            attempt = QuizAttempt(
+                enrollment_id=enrollment.id,
+                score=int(score),
+                correct_answers=correct,
+                total_questions=len(questions),
+            )
+            db.session.add(attempt)
+
             db.session.commit()
 
             return render_template(
