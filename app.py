@@ -6,6 +6,7 @@ from functools import wraps
 from pathlib import Path
 from flask_wtf.csrf import CSRFProtect, CSRFError
 
+
 from flask import (
     Flask,
     abort,
@@ -27,20 +28,26 @@ from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
+
 from models.database import db, Student, Course, Enrollment
 from recommender.engine import recommend_courses
 from recommender.quiz_data import QUIZ_BANK
+from recommender.quiz_banks import select_quiz_questions
 from recommender.learning_content import get_learning_content
 
 
+
 BASE_DIR = Path(__file__).resolve().parent
+
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
 login_manager.login_view = "login"
 login_manager.login_message_category = "info"
 
+
 ALLOWED_LEVELS = {"Beginner", "Intermediate", "Advanced"}
+
 
 STARTER_COURSES = [
     (
@@ -123,12 +130,14 @@ STARTER_COURSES = [
 ]
 
 
+
 @login_manager.user_loader
 def load_user(user_id):
     try:
         return db.session.get(Student, int(user_id))
     except (TypeError, ValueError):
         return None
+
 
 
 def admin_required(view_function):
@@ -139,13 +148,16 @@ def admin_required(view_function):
             abort(403)
         return view_function(*args, **kwargs)
 
+
     return wrapped_view
+
 
 
 def seed_courses():
     """Seed the catalog only when it is empty."""
     if Course.query.first() is not None:
         return
+
 
     for title, category, level, skills, description in STARTER_COURSES:
         db.session.add(
@@ -158,13 +170,16 @@ def seed_courses():
             )
         )
 
+
     db.session.commit()
+
 
 
 def initialize_database():
     """Create missing tables; do not delete existing records."""
     db.create_all()
     seed_courses()
+
 
 
 def average_score_for(enrollments):
@@ -174,14 +189,17 @@ def average_score_for(enrollments):
         if enrollment.quiz_score is not None
     ]
 
+
     return round(sum(scores) / len(scores), 1) if scores else None
 
 
-def select_quiz_questions(course):
+
+def select_legacy_quiz_questions(course):
     """Preserve the existing course-to-bank selection behavior."""
     course_text = (
         f"{course.title} {course.skills or ''}"
     ).lower()
+
 
     if "python" in course_text:
         bank_key = "python"
@@ -193,11 +211,14 @@ def select_quiz_questions(course):
     else:
         bank_key = "general"
 
+
     return QUIZ_BANK[bank_key]
+
 
 
 def build_student_reports():
     reports = []
+
 
     students = (
         Student.query.options(
@@ -206,6 +227,7 @@ def build_student_reports():
         .order_by(Student.name.asc())
         .all()
     )
+
 
     for student in students:
         enrollments = student.enrollments
@@ -218,6 +240,7 @@ def build_student_reports():
             for enrollment in enrollments
             if enrollment.quiz_score is not None
         )
+
 
         reports.append(
             {
@@ -237,11 +260,14 @@ def build_student_reports():
             }
         )
 
+
     return reports
+
 
 
 def create_app(test_config=None):
     application = Flask(__name__)
+
 
     application.config.from_mapping(
         SECRET_KEY=os.environ.get(
@@ -256,24 +282,30 @@ def create_app(test_config=None):
         DEBUG=False,
     )
 
+
     if test_config is not None:
         application.config.update(test_config)
+
 
     db.init_app(application)
     login_manager.init_app(application)
     csrf.init_app(application)
+
 
     @application.route("/")
     def index():
         if current_user.is_authenticated:
             return redirect(url_for("dashboard"))
 
+
         return render_template("index.html")
+
 
     @application.route("/register", methods=["GET", "POST"])
     def register():
         if current_user.is_authenticated:
             return redirect(url_for("dashboard"))
+
 
         if request.method == "POST":
             name = request.form.get("name", "").strip()
@@ -282,7 +314,9 @@ def create_app(test_config=None):
             interests = request.form.get("interests", "").strip()
             skills = request.form.get("skills", "").strip()
 
+
             error = None
+
 
             if not all((name, email, password)):
                 error = "Name, email, and password are required."
@@ -299,6 +333,7 @@ def create_app(test_config=None):
             elif Student.query.filter_by(email=email).first():
                 error = "An account with that email already exists."
 
+
             if error:
                 flash(error, "error")
             else:
@@ -310,6 +345,7 @@ def create_app(test_config=None):
                     skills=skills,
                 )
                 db.session.add(student)
+
 
                 try:
                     db.session.commit()
@@ -325,18 +361,23 @@ def create_app(test_config=None):
                     flash("Account created successfully.", "success")
                     return redirect(url_for("dashboard"))
 
+
         return render_template("register.html")
+
 
     @application.route("/login", methods=["GET", "POST"])
     def login():
         if current_user.is_authenticated:
             return redirect(url_for("dashboard"))
 
+
         if request.method == "POST":
             email = request.form.get("email", "").strip().lower()
             password = request.form.get("password", "")
 
+
             student = Student.query.filter_by(email=email).first()
+
 
             if student and check_password_hash(
                 student.password_hash,
@@ -345,12 +386,16 @@ def create_app(test_config=None):
                 login_user(student)
                 flash("Welcome back!", "success")
 
+
                 # Use a known internal destination in this first stage.
                 return redirect(url_for("dashboard"))
 
+
             flash("Invalid email or password.", "error")
 
+
         return render_template("login.html")
+
 
     @application.route("/logout", methods=["POST"])
     @login_required
@@ -359,10 +404,12 @@ def create_app(test_config=None):
         flash("You have been logged out.", "info")
         return redirect(url_for("index"))
 
+
     @application.route("/dashboard")
     @login_required
     def dashboard():
         courses = Course.query.order_by(Course.title.asc()).all()
+
 
         enrollments = (
             Enrollment.query.options(
@@ -371,6 +418,7 @@ def create_app(test_config=None):
             .filter_by(student_id=current_user.id)
             .all()
         )
+
 
         enrolled_ids = {
             enrollment.course_id for enrollment in enrollments
@@ -382,6 +430,7 @@ def create_app(test_config=None):
         }
         average_score = average_score_for(enrollments)
 
+
         recommendations = recommend_courses(
             courses=courses,
             interests=current_user.interests or "",
@@ -390,6 +439,7 @@ def create_app(test_config=None):
             completed_course_ids=completed_ids,
             enrolled_course_ids=enrolled_ids,
         )
+
 
         return render_template(
             "dashboard.html",
@@ -402,6 +452,7 @@ def create_app(test_config=None):
             recommendations=recommendations,
         )
 
+
     @application.route("/profile", methods=["GET", "POST"])
     @login_required
     def profile():
@@ -410,7 +461,9 @@ def create_app(test_config=None):
             interests = request.form.get("interests", "").strip()
             skills = request.form.get("skills", "").strip()
 
+
             error = None
+
 
             if not name:
                 error = "Name cannot be empty."
@@ -421,6 +474,7 @@ def create_app(test_config=None):
             elif len(skills) > 300:
                 error = "Skills must be 300 characters or fewer."
 
+
             if error:
                 flash(error, "error")
             else:
@@ -429,25 +483,32 @@ def create_app(test_config=None):
                 current_user.skills = skills
                 db.session.commit()
 
+
                 flash("Profile updated.", "success")
                 return redirect(url_for("profile"))
 
+
         return render_template("profile.html")
+
 
     @application.route("/courses/<int:course_id>")
     @login_required
     def course_detail(course_id):
         course = db.session.get(Course, course_id)
 
+
         if course is None:
             abort(404)
+
 
         enrollment = Enrollment.query.filter_by(
             student_id=current_user.id,
             course_id=course_id,
         ).first()
 
+
         content = get_learning_content(course.title)
+
 
         return render_template(
             "course_detail.html",
@@ -457,6 +518,7 @@ def create_app(test_config=None):
         )
 
 
+
     @application.route("/courses")
     @login_required
     def courses():
@@ -464,7 +526,9 @@ def create_app(test_config=None):
         category = request.args.get("category", "").strip()
         level = request.args.get("level", "").strip()
 
+
         course_query = Course.query
+
 
         if query:
             like = f"%{query}%"
@@ -476,13 +540,17 @@ def create_app(test_config=None):
                 )
             )
 
+
         if category:
             course_query = course_query.filter_by(category=category)
+
 
         if level:
             course_query = course_query.filter_by(level=level)
 
+
         all_courses = course_query.order_by(Course.title.asc()).all()
+
 
         categories = [
             row[0]
@@ -492,12 +560,14 @@ def create_app(test_config=None):
             .all()
         ]
 
+
         enrolled_ids = {
             row[0]
             for row in db.session.query(Enrollment.course_id)
             .filter_by(student_id=current_user.id)
             .all()
         }
+
 
         return render_template(
             "courses.html",
@@ -509,16 +579,19 @@ def create_app(test_config=None):
             enrolled_ids=enrolled_ids,
         )
 
+
     @application.route("/enroll/<int:course_id>", methods=["POST"])
     @login_required
     def enroll(course_id):
         if db.session.get(Course, course_id) is None:
             abort(404)
 
+
         existing = Enrollment.query.filter_by(
             student_id=current_user.id,
             course_id=course_id,
         ).first()
+
 
         if existing:
             flash("You are already enrolled in this course.", "info")
@@ -529,6 +602,7 @@ def create_app(test_config=None):
                     course_id=course_id,
                 )
             )
+
 
             try:
                 db.session.commit()
@@ -542,7 +616,9 @@ def create_app(test_config=None):
             else:
                 flash("Successfully enrolled in the course.", "success")
 
+
         return redirect(url_for("courses"))
+
 
     @application.route(
         "/quiz/<int:course_id>",
@@ -552,25 +628,33 @@ def create_app(test_config=None):
     def take_quiz(course_id):
         course = db.session.get(Course, course_id)
 
+
         if course is None:
             abort(404)
+
 
         enrollment = Enrollment.query.filter_by(
             student_id=current_user.id,
             course_id=course_id,
         ).first()
 
+
         if enrollment is None:
             flash("Enroll in this course before taking its quiz.", "error")
             return redirect(url_for("courses"))
 
+
         questions = select_quiz_questions(course)
+
+
 
         if not questions:
             abort(404)
 
+
         if request.method == "POST":
             correct = 0
+
 
             for index, question in enumerate(questions):
                 raw_answer = request.form.get(
@@ -578,22 +662,26 @@ def create_app(test_config=None):
                     "",
                 ).strip()
 
+
                 if not raw_answer:
                     # Preserve existing behavior: unanswered = incorrect.
                     continue
+
 
                 try:
                     answer = int(raw_answer)
                 except ValueError:
                     abort(400)
 
+
                 if not 0 <= answer < len(question["options"]):
                     abort(400)
+
 
                 if answer == question["answer"]:
                     correct += 1
 
-                    score = round(correct / len(questions) * 100, 1)
+            score = round(correct / len(questions) * 100, 1)
 
             enrollment.quiz_score = score
 
@@ -615,11 +703,13 @@ def create_app(test_config=None):
                 total=len(questions),
             )
 
+
         return render_template(
             "quiz.html",
             course=course,
             questions=questions,
         )
+
 
     @application.route(
         "/courses/<int:course_id>/complete",
@@ -631,6 +721,7 @@ def create_app(test_config=None):
             student_id=current_user.id,
             course_id=course_id,
         ).first()
+
 
         if enrollment is None:
             flash(
@@ -653,6 +744,7 @@ def create_app(test_config=None):
                 "success",
             )
 
+
         return redirect(url_for("dashboard"))
 
     @application.route("/analytics")
@@ -666,11 +758,13 @@ def create_app(test_config=None):
             .all()
         )
 
+
         scored = sum(
             1
             for enrollment in enrollments
             if enrollment.quiz_score is not None
         )
+
 
         return render_template(
             "analytics.html",
@@ -683,10 +777,12 @@ def create_app(test_config=None):
             average_score=average_score_for(enrollments),
         )
 
+
     @application.route("/admin")
     @admin_required
     def admin_dashboard():
         students = Student.query.order_by(Student.id.desc()).all()
+
 
         courses = (
             Course.query.options(
@@ -696,7 +792,9 @@ def create_app(test_config=None):
             .all()
         )
 
+
         enrollments = Enrollment.query.all()
+
 
         return render_template(
             "admin_dashboard.html",
@@ -711,6 +809,7 @@ def create_app(test_config=None):
             average_quiz_score=average_score_for(enrollments),
         )
 
+
     @application.route("/admin/courses/add", methods=["POST"])
     @admin_required
     def admin_add_course():
@@ -720,7 +819,9 @@ def create_app(test_config=None):
         skills = request.form.get("skills", "").strip()
         description = request.form.get("description", "").strip()
 
+
         error = None
+
 
         if not all((title, category, level, skills, description)):
             error = "Please fill in every course field."
@@ -732,6 +833,7 @@ def create_app(test_config=None):
             error = "Choose Beginner, Intermediate, or Advanced."
         elif len(skills) > 300:
             error = "Skills must be 300 characters or fewer."
+
 
         if error:
             flash(error, "error")
@@ -748,7 +850,9 @@ def create_app(test_config=None):
             db.session.commit()
             flash("Course added successfully.", "success")
 
+
         return redirect(url_for("admin_dashboard"))
+
 
     @application.route(
         "/admin/courses/<int:course_id>/delete",
@@ -758,8 +862,10 @@ def create_app(test_config=None):
     def admin_delete_course(course_id):
         course = db.session.get(Course, course_id)
 
+
         if course is None:
             abort(404)
+
 
         if Enrollment.query.filter_by(course_id=course_id).first():
             flash(
@@ -772,12 +878,15 @@ def create_app(test_config=None):
             db.session.commit()
             flash("Course deleted.", "success")
 
+
         return redirect(url_for("admin_dashboard"))
+
 
     @application.route("/admin/student-reports")
     @admin_required
     def admin_student_reports():
         reports = build_student_reports()
+
 
         return render_template(
             "admin_student_reports.html",
@@ -785,11 +894,13 @@ def create_app(test_config=None):
             total_students=len(reports),
         )
 
+
     @application.route("/admin/student-reports/export")
     @admin_required
     def export_student_reports():
         output = io.StringIO()
         writer = csv.writer(output)
+
 
         writer.writerow(
             [
@@ -804,6 +915,7 @@ def create_app(test_config=None):
                 "Completion Rate (%)",
             ]
         )
+
 
         for report in build_student_reports():
             writer.writerow(
@@ -824,13 +936,17 @@ def create_app(test_config=None):
                 ]
             )
 
+
         response = make_response("\ufeff" + output.getvalue())
         response.headers["Content-Type"] = "text/csv; charset=utf-8"
         response.headers["Content-Disposition"] = (
             "attachment; filename=student_performance_reports.csv"
         )
 
+
         return response
+
+
     @application.errorhandler(CSRFError)
     def csrf_error(_error):
         return (
@@ -860,6 +976,7 @@ def create_app(test_config=None):
             400,
         )
 
+
     @application.errorhandler(403)
     def forbidden(_error):
         return (
@@ -870,6 +987,7 @@ def create_app(test_config=None):
             ),
             403,
         )
+
 
     @application.errorhandler(404)
     def not_found(_error):
@@ -882,13 +1000,16 @@ def create_app(test_config=None):
             404,
         )
 
+
     @application.cli.command("init-db")
     def init_db_command():
         """Create missing tables and seed an empty course catalog."""
         initialize_database()
         print("Database initialized.")
 
+
     return application
+
 
 
 # Keeps existing helper scripts using "from app import app" compatible.
@@ -896,8 +1017,10 @@ def create_app(test_config=None):
 app = create_app()
 
 
+
 if __name__ == "__main__":
     with app.app_context():
         initialize_database()
+
 
     app.run(debug=False)

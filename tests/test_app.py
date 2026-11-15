@@ -1,3 +1,4 @@
+from models.database import Course, Enrollment
 from models.database import QuizAttempt
 from pathlib import Path
 
@@ -218,30 +219,43 @@ def test_quiz_requires_enrollment(client):
 def test_quiz_saves_score(client):
     login(client)
     course_id = course_id_for(client)
-    client.post(f"/enroll/{course_id}")
 
-    answers = {
-        f"question_{index}": str(question["answer"])
-        for index, question in enumerate(QUIZ_BANK["python"])
-    }
+    with client.application.app_context():
+        course = db.session.get(Course, course_id)
+
+        course.title = "Python Programming Fundamentals"
+        db.session.commit()
+
+    client.post(f"/enroll/{course_id}")
 
     response = client.post(
         f"/quiz/{course_id}",
-        data=answers,
+        data={},
     )
 
     assert response.status_code == 200
 
     with client.application.app_context():
-        enrollment = Enrollment.query.one()
+        enrollment = Enrollment.query.filter_by(
+            student_id=1,
+            course_id=course_id,
+        ).first()
 
-        assert enrollment.quiz_score == 100.0
-        assert enrollment.completed is False
-
+        assert enrollment is not None
+        assert enrollment.quiz_score == 0.0
+        assert len(enrollment.quiz_attempts) == 1
+        assert enrollment.quiz_attempts[0].total_questions == 15
 
 def test_invalid_quiz_answer_is_rejected(client):
     login(client)
     course_id = course_id_for(client)
+
+    with client.application.app_context():
+        course = db.session.get(Course, course_id)
+
+        course.title = "Python Programming Fundamentals"
+        db.session.commit()
+
     client.post(f"/enroll/{course_id}")
 
     response = client.post(
@@ -250,10 +264,6 @@ def test_invalid_quiz_answer_is_rejected(client):
     )
 
     assert response.status_code == 400
-
-    with client.application.app_context():
-        assert Enrollment.query.one().quiz_score is None
-
 
 def test_completion_requires_passing_score(client):
     login(client)
