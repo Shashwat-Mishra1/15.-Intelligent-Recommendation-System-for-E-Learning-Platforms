@@ -1,5 +1,6 @@
 """Course-specific quiz banks.
 
+
 Each question includes:
 - question text
 - four options
@@ -260,6 +261,335 @@ PYTHON_QUESTION_BANK = [
 ]
 
 
+FLASK_QUESTION_BANK = [
+    {
+        "id": "fl-001",
+        "topic": "Flask basics",
+        "question": "What does the @app.route decorator do in Flask?",
+        "options": [
+            "Defines a URL route for a view function",
+            "Starts the Flask development server",
+            "Creates a database table",
+            "Installs a Flask extension",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-002",
+        "topic": "Flask basics",
+        "question": "Which file is commonly used as the main Flask application file?",
+        "options": ["app.py", "index.css", "database.sql", "package.json"],
+        "answer": 0,
+    },
+    {
+        "id": "fl-003",
+        "topic": "Flask basics",
+        "question": "Which function starts the Flask development server?",
+        "options": [
+            "app.run()",
+            "flask.start()",
+            "server.begin()",
+            "app.deploy()",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-004",
+        "topic": "Templates",
+        "question": "What is Jinja2 used for in Flask?",
+        "options": [
+            "Rendering HTML templates",
+            "Managing JavaScript packages",
+            "Creating mobile apps",
+            "Compiling Python code",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-005",
+        "topic": "Templates",
+        "question": "Which folder commonly stores HTML templates in a Flask project?",
+        "options": ["templates", "static", "models", "routes"],
+        "answer": 0,
+    },
+    {
+        "id": "fl-006",
+        "topic": "Static files",
+        "question": "Which folder commonly stores CSS, JavaScript, and image files?",
+        "options": ["static", "templates", "database", "config"],
+        "answer": 0,
+    },
+    {
+        "id": "fl-007",
+        "topic": "Templates",
+        "question": "How do you pass a variable to a Jinja template in Flask?",
+        "options": [
+            "render_template('page.html', name=name)",
+            "render_page('page.html')",
+            "send_template(name)",
+            "template.load(name)",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-008",
+        "topic": "Forms",
+        "question": "Which HTTP method is commonly used to submit form data?",
+        "options": ["POST", "GET", "DELETE", "PATCH"],
+        "answer": 0,
+    },
+    {
+        "id": "fl-009",
+        "topic": "Forms",
+        "question": "Which Flask object provides access to submitted form data?",
+        "options": [
+            "request.form",
+            "app.form",
+            "response.data",
+            "session.form",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-010",
+        "topic": "Templates",
+        "question": "Which Flask function is used to return an HTML response?",
+        "options": [
+            "render_template()",
+            "database.query()",
+            "app.create()",
+            "session.save()",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-011",
+        "topic": "Routing",
+        "question": "What is a dynamic route?",
+        "options": [
+            "A route that accepts a variable part in the URL",
+            "A route that only works offline",
+            "A route that cannot return HTML",
+            "A route that must use JavaScript",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-012",
+        "topic": "Routing",
+        "question": "Which route pattern accepts a user ID from the URL?",
+        "options": [
+            "/user/<int:user_id>",
+            "/user?user_id",
+            "/user[user_id]",
+            "/user::user_id",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-013",
+        "topic": "Routing",
+        "question": "What does redirect() do in Flask?",
+        "options": [
+            "Sends the user to another URL",
+            "Deletes a database record",
+            "Renders a CSS file",
+            "Creates a new Flask app",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-014",
+        "topic": "User feedback",
+        "question": "Which function is used to display flash messages?",
+        "options": ["flash()", "message()", "notify()", "alert()"],
+        "answer": 0,
+    },
+    {
+        "id": "fl-015",
+        "topic": "Databases",
+        "question": "Which Flask extension is commonly used for database models?",
+        "options": [
+            "Flask-SQLAlchemy",
+            "Flask-CSS",
+            "Flask-HTML",
+            "Flask-Images",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-016",
+        "topic": "Databases",
+        "question": "What is SQLAlchemy primarily used for?",
+        "options": [
+            "Working with databases using Python",
+            "Styling web pages",
+            "Creating animations",
+            "Managing browser cookies",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-017",
+        "topic": "Databases",
+        "question": "What does ORM stand for?",
+        "options": [
+            "Object-Relational Mapping",
+            "Online Route Manager",
+            "Output Response Method",
+            "Optional Rendering Module",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-018",
+        "topic": "Databases",
+        "question": "Which command creates database tables from SQLAlchemy models?",
+        "options": [
+            "db.create_all()",
+            "db.make_tables()",
+            "database.build()",
+            "sql.create()",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-019",
+        "topic": "Databases",
+        "question": "Which methods save a new SQLAlchemy object to the database?",
+        "options": [
+            "db.session.add() followed by db.session.commit()",
+            "db.save()",
+            "db.insert()",
+            "db.update_all()",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-020",
+        "topic": "Databases",
+        "question": "Which method retrieves all records from a SQLAlchemy model?",
+        "options": [
+            "Model.query.all()",
+            "Model.get_everything()",
+            "db.fetch_all()",
+            "Model.select()",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-021",
+        "topic": "Project structure",
+        "question": "What is a Flask blueprint used for?",
+        "options": [
+            "Organizing routes into reusable modules",
+            "Styling buttons",
+            "Storing user passwords in plain text",
+            "Replacing HTML entirely",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-022",
+        "topic": "Environments",
+        "question": "What is the purpose of a virtual environment?",
+        "options": [
+            "Keeps project dependencies isolated",
+            "Makes Python run faster permanently",
+            "Deletes installed packages",
+            "Replaces the operating system",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-023",
+        "topic": "Environments",
+        "question": "Which file commonly lists project dependencies?",
+        "options": [
+            "requirements.txt",
+            "styles.css",
+            "index.html",
+            "README.md",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-024",
+        "topic": "Environments",
+        "question": "Which command installs dependencies from requirements.txt?",
+        "options": [
+            "pip install -r requirements.txt",
+            "python install requirements",
+            "flask install",
+            "pip download all",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-025",
+        "topic": "HTTP",
+        "question": "What does HTTP stand for?",
+        "options": [
+            "HyperText Transfer Protocol",
+            "High Transfer Text Process",
+            "Hyperlink Transfer Program",
+            "Host Transfer Text Protocol",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-026",
+        "topic": "HTTP",
+        "question": "Which HTTP status code means a page was found successfully?",
+        "options": ["200", "404", "500", "301"],
+        "answer": 0,
+    },
+    {
+        "id": "fl-027",
+        "topic": "HTTP",
+        "question": "Which HTTP status code means a page was not found?",
+        "options": ["404", "200", "301", "500"],
+        "answer": 0,
+    },
+    {
+        "id": "fl-028",
+        "topic": "Sessions",
+        "question": "What is a session used for in Flask?",
+        "options": [
+            "Storing small user-specific data between requests",
+            "Rendering CSS files",
+            "Creating database backups",
+            "Installing packages",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-029",
+        "topic": "Sessions",
+        "question": "Which setting is required for Flask session security?",
+        "options": [
+            "SECRET_KEY",
+            "APP_NAME",
+            "DATABASE_NAME",
+            "STATIC_FOLDER",
+        ],
+        "answer": 0,
+    },
+    {
+        "id": "fl-030",
+        "topic": "Development",
+        "question": "What does debug=True do during development?",
+        "options": [
+            "Enables helpful error details and automatic reloading",
+            "Deletes all routes",
+            "Disables HTML templates",
+            "Prevents the app from running",
+        ],
+        "answer": 0,
+    },
+]
+
+
 QUIZ_LENGTH = 15
 SESSION_KEY = "last_python_quiz_question_ids"
 
@@ -267,6 +597,7 @@ SESSION_KEY = "last_python_quiz_question_ids"
 def _select_questions(available_questions):
     """Select 15 questions, preferring questions not used immediately before."""
     previous_ids = set(session.get(SESSION_KEY, []))
+
 
     unused = [
         question for question in available_questions
@@ -277,26 +608,33 @@ def _select_questions(available_questions):
         if question["id"] in previous_ids
     ]
 
+
     random.shuffle(unused)
     random.shuffle(used)
 
+
     selected = unused[:QUIZ_LENGTH]
+
 
     if len(selected) < QUIZ_LENGTH:
         remaining = QUIZ_LENGTH - len(selected)
         selected.extend(used[:remaining])
 
+
     random.shuffle(selected)
+
 
     session[SESSION_KEY] = [
         question["id"] for question in selected
     ]
+
 
     return selected
 
 
 def select_quiz_questions(course):
     """Return course-specific randomized questions when available.
+
 
     Courses without a dedicated randomized bank fall back to the
     original quiz bank so existing enrollments remain usable.
@@ -305,12 +643,19 @@ def select_quiz_questions(course):
         (course.title or "").casefold().split()
     )
 
+
     if normalized_title == "python programming fundamentals":
         return _select_questions(PYTHON_QUESTION_BANK)
+
+
+    if normalized_title == "web development with flask":
+        return _select_questions(FLASK_QUESTION_BANK)
+
 
     course_text = (
         f"{course.title} {course.skills or ''}"
     ).lower()
+
 
     if "python" in course_text:
         bank_key = "python"
@@ -321,5 +666,6 @@ def select_quiz_questions(course):
         bank_key = "web development"
     else:
         bank_key = "general"
+
 
     return QUIZ_BANK[bank_key]
